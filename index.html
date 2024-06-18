@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Innovadora de IMC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .result, .running, .reward {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e6ffe6;
+            border-radius: 10px;
+            display: none;
+        }
+        .running {
+            background: #ffffe6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora Innovadora de IMC</h1>
+        <form id="imcForm">
+            <div>
+                <label for="weight">Peso (kg): </label>
+                <input type="number" id="weight" required>
+            </div>
+            <div>
+                <label for="height">Altura (m): </label>
+                <input type="number" id="height" step="0.01" required>
+            </div>
+            <button type="submit">Calcular IMC</button>
+        </form>
+        <div id="imcResult" class="result"></div>
+        <div id="runningPlan" class="running">
+            <button id="startRun">Iniciar Carrera</button>
+            <div id="runningMessage">Carrera en Proceso...</div>
+            <div id="finishRunContainer" style="display: none;">
+                <input type="number" id="kmRan" placeholder="Km recorridos" required>
+                <button id="finishRun">Finalizar y Guardar</button>
+            </div>
+        </div>
+        <div id="rewardMessage" class="reward"></div>
+    </div>
+
+    <script>
+        let totalKmRan = 0;
+        let runningKmPerDay = 0;
+
+        document.getElementById('imcForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const imc = weight / (height * height);
+
+            if (imc < 18.5) {
+                runningKmPerDay = 2;
+            } else if (imc < 25) {
+                runningKmPerDay = 1;
+            } else {
+                runningKmPerDay = 6;
+            }
+
+            document.getElementById('imcResult').innerHTML = `Tu IMC es ${imc.toFixed(2)}. Debes correr ${runningKmPerDay} km por día para mejorar tu salud.`;
+            document.getElementById('imcResult').style.display = 'block';
+            document.getElementById('runningPlan').style.display = 'block';
+        });
+
+        document.getElementById('startRun').addEventListener('click', function() {
+            document.getElementById('runningMessage').style.display = 'block';
+            document.getElementById('finishRunContainer').style.display = 'block';
+        });
+
+        document.getElementById('finishRun').addEventListener('click', function() {
+            const kmRan = parseFloat(document.getElementById('kmRan').value);
+            totalKmRan += kmRan;
+            const dailyReward = kmRan * 10;
+            const totalReward = totalKmRan * 10;
+
+            document.getElementById('rewardMessage').innerHTML = `¡Felicidades! Hoy has corrido ${kmRan} km y has ganado $${dailyReward}.<br>Total acumulado: ${totalKmRan} km y $${totalReward}.`;
+            document.getElementById('rewardMessage').style.display = 'block';
+            document.getElementById('kmRan').value = ''; // Clear input field
+        });
+    </script>
+</body>
+</html>
